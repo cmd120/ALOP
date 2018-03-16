@@ -1,12 +1,20 @@
+#include <string>
+#include <iostream>
+#include <fstream>
+#include "Eigen/Dense"
+using namespace Eigen;
+using namespace std;
+typedef unsigned char uchar;
 //for reading images dataset
-uchar** read_mnist_images(string full_path, int& number_of_images, int& image_size) {
-    auto reverseInt = [](int i) {
+
+// uchar** read_mnist_images(string full_path, int& number_of_images, int& image_size) {
+uchar** read_mnist_images(string full_path) {
+    int number_of_images,image_size;//modification
+    auto reverseInt = [](int i) {       
         unsigned char c1, c2, c3, c4;
         c1 = i & 255, c2 = (i >> 8) & 255, c3 = (i >> 16) & 255, c4 = (i >> 24) & 255;
         return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
     };
-
-    typedef unsigned char uchar;
 
     ifstream file(full_path, ios::binary);
 
@@ -36,14 +44,14 @@ uchar** read_mnist_images(string full_path, int& number_of_images, int& image_si
 }
 
 //for reading labels dataset
-uchar* read_mnist_labels(string full_path, int& number_of_labels) {
+// uchar* read_mnist_labels(string full_path, int& number_of_labels) {
+uchar* read_mnist_labels(string full_path) {
+    int number_of_labels;
     auto reverseInt = [](int i) {
         unsigned char c1, c2, c3, c4;
         c1 = i & 255, c2 = (i >> 8) & 255, c3 = (i >> 16) & 255, c4 = (i >> 24) & 255;
         return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
     };
-
-    typedef unsigned char uchar;
 
     ifstream file(full_path, ios::binary);
 
@@ -63,5 +71,22 @@ uchar* read_mnist_labels(string full_path, int& number_of_labels) {
         return _dataset;
     } else {
         throw runtime_error("Unable to open file `" + full_path + "`!");
+    }
+}
+
+int main(int argc,char* argv[]){
+    if (argc!=3){
+        cout << "exactly 3 arguments required." << endl;
+        return 1;
+    }
+    else{
+        if(!strcmp(argv[2],"images")){
+            uchar ** imageM;
+            imageM = read_mnist_images(argv[1]);
+        }
+        else if(!strcmp(argv[2],"labels")){
+            uchar * labelV;
+            labelV = read_mnist_labels(argv[1]);
+        }
     }
 }
